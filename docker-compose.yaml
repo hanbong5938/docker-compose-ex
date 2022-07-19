@@ -28,3 +28,25 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     restart: unless-stopped
+  mysql-master:
+    image: mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: test
+    container_name: mysql-master
+    ports:
+      - "9000:3306"
+    volumes:
+      - ./mysql/master/config_file.cnf:/etc/mysql/conf.d/config_file.cnf
+  mysql-slave-1:
+    image: mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: test
+    container_name: mysql-slave-1
+    ports:
+      - "9001:3306"
+    volumes:
+      - ./mysql/slave/config_file-slave-1.cnf:/etc/mysql/conf.d/config_file.cnf
+    links:
+      - mysql-master
